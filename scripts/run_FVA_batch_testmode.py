@@ -31,6 +31,12 @@ for model_name in conds["organism"].unique():
         if "EX_o2_e" in m.reactions:
             m.reactions.EX_o2_e.bounds = (r["O2_lb"], r["O2_ub"])
         sol = flux_variability_analysis(m, fraction_of_optimum=0.9)
+        try:
+            sol = flux_variability_analysis(m, fraction_of_optimum=0.9)
+        except Exception as e:
+            print(f"⚠️  Skipped {r['cond_id']} ({e})")
+            continue
+
         sol["cond_id"] = r["cond_id"]
         results.append(sol)
 
