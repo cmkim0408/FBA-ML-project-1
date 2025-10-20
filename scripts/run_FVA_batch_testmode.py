@@ -20,7 +20,12 @@ for model_name in conds["organism"].unique():
     for _, r in tqdm(subset.iterrows(), total=len(subset)):
         m = model.copy()
         for ex in m.exchanges:
-            ex.lower_bound = 0
+            # 하한이 상한보다 크지 않도록 보호
+            try:
+                ex.lower_bound = min(0, ex.upper_bound)
+            except:
+                pass
+
         if r["carbon_source"] in m.reactions:
             m.reactions.get_by_id(r["carbon_source"]).lower_bound = -10
         if "EX_o2_e" in m.reactions:
