@@ -4,6 +4,12 @@ from cobra.flux_analysis import flux_variability_analysis
 from tqdm import tqdm
 from multiprocessing import Process, Queue
 
+# --- 새로 추가할 부분 (기존 코드 import 바로 아래) ---
+done_models = {os.path.basename(x).replace('.parquet','')
+               for x in os.listdir('data/fva_results')}
+print(f"✅ 이미 완료된 모델: {len(done_models)}개 → {sorted(done_models)}")
+# ------------------------------------------------------
+
 # 전체 조건 실행
 test_mode = False
 conds = pd.read_csv("data/conditions.tsv", sep="\t")
@@ -55,6 +61,9 @@ def run_fva_with_timeout(model_xml, cond, timeout=30):
     return result
 
 for model_name in conds["organism"].unique():
+    if model_name in done_models:
+        print(f"⏩ Skip {model_name} (already done)")
+        continue
     model_path = f"data/{model_name}.xml"
     subset = conds[conds.organism == model_name]
     if test_mode:
