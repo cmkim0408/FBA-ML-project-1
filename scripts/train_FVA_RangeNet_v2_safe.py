@@ -54,13 +54,10 @@ for ep in range(40):
         val_preds = model(torch.tensor(xte).float())
         val_loss = loss_fn(val_preds, torch.tensor(yte).float()).item()
     print(f"Epoch {ep+1:02d} TrainLoss={loss.item():.4f} ValLoss={val_loss:.4f}")
-
-    # checkpoint 저장
     torch.save(model.state_dict(), f"outputs/FVA_RangeNet_v2_ep{ep+1}.pt")
 
 print("✅ Training finished. Final checkpoint saved.")
 
-# evaluation
 with torch.no_grad():
     preds = model(torch.tensor(xte).float()).numpy()
 r2 = r2_score(yte, preds)
