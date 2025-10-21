@@ -30,7 +30,8 @@ with torch.no_grad():
 
 # 평가 지표
 r2 = r2_score(Y, preds)
-rmse = mean_squared_error(Y, preds, squared=False)
+import numpy as np
+rmse = np.sqrt(mean_squared_error(Y, preds))
 print(f"✅ R2={r2:.4f}, RMSE={rmse:.4f}")
 
 # 산점도
